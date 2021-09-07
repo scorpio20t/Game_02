@@ -34,7 +34,7 @@ void UHealthComponent::MakeDead()
 
 float UHealthComponent::HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	if (bIsAlive)
+	if (bIsAlive && bCanBeDamaged)
 	{
 		CurrentHealth -= Damage;
 

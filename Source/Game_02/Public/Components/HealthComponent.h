@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Health")
 	float MaxHealth = 100;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	bool bCanBeDamaged = true;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
 	bool bIsAlive = true;
 
