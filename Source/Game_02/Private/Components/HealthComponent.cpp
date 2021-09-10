@@ -46,6 +46,11 @@ float UHealthComponent::HandleDamage(AActor* DamagedActor, float Damage, const c
 	return CurrentHealth;
 }
 
+void UHealthComponent::Heal()
+{
+	CurrentHealth = MaxHealth;
+}
+
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();

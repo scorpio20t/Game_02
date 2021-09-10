@@ -37,6 +37,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealthPercentage() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void Heal();
+
 	UFUNCTION()
 	float HandleDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
