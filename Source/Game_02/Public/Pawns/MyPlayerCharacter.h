@@ -19,7 +19,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(BlueprintReadWrite)
-	bool bCanShoot = false;
+	bool bCanShoot = true;
 
 protected:
 	virtual void BeginPlay() override;
