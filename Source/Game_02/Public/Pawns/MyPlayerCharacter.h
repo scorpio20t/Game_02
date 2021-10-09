@@ -18,7 +18,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(BlueprintReadWrite)
+	UFUNCTION(BlueprintPure, Category = "PlayerCharacter")
+	FRotator GetAimRotationFromCursor();
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
+	UDecalComponent* CursorToWorld = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	bool bCanShoot = true;
 
 protected:

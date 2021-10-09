@@ -4,10 +4,14 @@
 #include "Pawns/MyPlayerCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/WeaponComponent.h"
+#include "Components/DecalComponent.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
+	CursorToWorld->SetupAttachment(RootComponent);
 }
 
 void AMyPlayerCharacter::MoveForward(float AxisValue)
@@ -33,6 +37,13 @@ void AMyPlayerCharacter::StartFire()
 void AMyPlayerCharacter::StopFire()
 {
 	WeaponComponent->StopFire();
+}
+
+FRotator AMyPlayerCharacter::GetAimRotationFromCursor()
+{
+	FVector ToVector = FVector(CursorToWorld->GetComponentLocation().X, CursorToWorld->GetComponentLocation().Y, GetActorLocation().Z);
+	
+	return UKismetMathLibrary::Conv_VectorToRotator(UKismetMathLibrary::GetDirectionUnitVector(GetActorLocation(), ToVector));
 }
 
 void AMyPlayerCharacter::BeginPlay()
