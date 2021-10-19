@@ -5,6 +5,13 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/WeaponComponent.h"
 #include "Components/DecalComponent.h"
+#include "Components/ArrowComponent.h"
+#include "GlobalFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Components/BrushComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "Controllers/MyPlayerController.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
 {
@@ -12,6 +19,10 @@ AMyPlayerCharacter::AMyPlayerCharacter()
 
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->SetupAttachment(RootComponent);
+
+	AimHelper = CreateDefaultSubobject<UArrowComponent>("AimHelper");
+	AimHelper->SetupAttachment(RootComponent);
+	AimHelper->SetHiddenInGame(true);
 }
 
 void AMyPlayerCharacter::MoveForward(float AxisValue)
@@ -46,21 +57,99 @@ FRotator AMyPlayerCharacter::GetAimRotationFromCursor()
 	return UKismetMathLibrary::Conv_VectorToRotator(UKismetMathLibrary::GetDirectionUnitVector(GetActorLocation(), ToVector));
 }
 
+void AMyPlayerCharacter::HandleCursorVisibilityAndLocation()
+{
+	if (UGlobalFunctionLibrary::IsGamepadUsed(this))
+	{
+		CursorToWorld->SetVisibility(false);
+	}
+	else
+	{
+		CursorToWorld->SetVisibility(true);
+
+		FHitResult HitResult;
+		MyPlayerController->GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, HitResult);
+		CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, UKismetMathLibrary::MakeRotationFromAxes(HitResult.ImpactNormal, FVector::ZeroVector, FVector::ZeroVector));
+		AimHelper->SetWorldRotation(GetAimRotationFromCursor());
+
+		if (ShowCursorWhenMouseOver(HitResult.GetComponent()))
+		{
+			MyPlayerController->CurrentMouseCursor = EMouseCursor::Default;
+		}
+		else
+		{
+			MyPlayerController->CurrentMouseCursor = EMouseCursor::Crosshairs;
+		}
+	}
+}
+
+void AMyPlayerCharacter::HandleCharacterAimingRotation()
+{
+	FRotator TargetAimRotation;
+	if (UGlobalFunctionLibrary::IsGamepadUsed(this))
+	{
+		TargetAimRotation = AimRotationWithGamepad;
+	}
+	else
+	{
+		TargetAimRotation = GetAimRotationFromCursor();
+	}
+
+	FRotator NewRotation = 
+		UKismetMathLibrary::RInterpTo(GetControlRotation(), TargetAimRotation, GetWorld()->GetDeltaSeconds(), AimRotationInterpSpeed);
+
+	MyPlayerController->SetControlRotation(NewRotation);
+}
+
+bool AMyPlayerCharacter::ShowCursorWhenMouseOver(UPrimitiveComponent* Target)
+{
+	if (Target)
+	{
+		if (Cast<UBrushComponent>(Target))
+		{
+			return true;
+		}
+		else if (Target->bReceivesDecals)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
+
+bool AMyPlayerCharacter::IsAimingWithGamepad()
+{
+	return UKismetMathLibrary::Abs(MyPlayerInputComponent->GetAxisValue("AimY")) > 0.1f
+		|| UKismetMathLibrary::Abs(MyPlayerInputComponent->GetAxisValue("AimX")) > 0.1f;
+}
+
 void AMyPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	WeaponComponent = FindComponentByClass<UWeaponComponent>();
 }
 
 void AMyPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	HandleCursorVisibilityAndLocation();
+	HandleCharacterAimingRotation();
 }
 
 void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	MyPlayerInputComponent = PlayerInputComponent;
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayerCharacter::MoveRight);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AMyPlayerCharacter::StartFire);
