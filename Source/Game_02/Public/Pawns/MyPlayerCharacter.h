@@ -44,9 +44,6 @@ public:
 	UArrowComponent* AimHelper = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
-	FRotator AimRotationWithGamepad;
-
-	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	bool bCanShoot = true;
 
 protected:
@@ -56,9 +53,17 @@ private:
 	AMyPlayerController* MyPlayerController = nullptr;
 	UWeaponComponent* WeaponComponent = nullptr;
 	UInputComponent* MyPlayerInputComponent = nullptr;
+
+	float AimXValue;
+	float AimYValue;
+	FRotator AimRotationWithGamepad;
 	
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
+	void AimY(float AxisValue);
+	void AimX(float AxisValue);
 	void StartFire();
 	void StopFire();
+
+	void SetGamepadAimRotation();
 };

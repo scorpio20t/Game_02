@@ -37,6 +37,16 @@ void AMyPlayerCharacter::MoveRight(float AxisValue)
 	AddMovementInput(RightMovementVector, AxisValue);
 }
 
+void AMyPlayerCharacter::AimY(float AxisValue)
+{
+	AimXValue = AxisValue;
+}
+
+void AMyPlayerCharacter::AimX(float AxisValue)
+{
+	AimYValue = AxisValue;
+}
+
 void AMyPlayerCharacter::StartFire()
 {
 	if (bCanShoot)
@@ -48,6 +58,20 @@ void AMyPlayerCharacter::StartFire()
 void AMyPlayerCharacter::StopFire()
 {
 	WeaponComponent->StopFire();
+}
+
+void AMyPlayerCharacter::SetGamepadAimRotation()
+{
+	if (IsAimingWithGamepad())
+	{
+		AimRotationWithGamepad = UKismetMathLibrary::Conv_VectorToRotator(FVector(AimXValue, AimYValue, 0.f));
+	}
+	else
+	{
+		AimRotationWithGamepad = GetActorRotation();
+	}
+
+	AimHelper->SetWorldRotation(AimRotationWithGamepad);
 }
 
 FRotator AMyPlayerCharacter::GetAimRotationFromCursor()
@@ -88,7 +112,7 @@ void AMyPlayerCharacter::HandleCharacterAimingRotation()
 	FRotator TargetAimRotation;
 	if (UGlobalFunctionLibrary::IsGamepadUsed(this))
 	{
-		TargetAimRotation = AimRotationWithGamepad;
+		TargetAimRotation = AimRotationWithGamepad; //TODO - try using a function returning the required FRotator
 	}
 	else
 	{
@@ -140,7 +164,14 @@ void AMyPlayerCharacter::BeginPlay()
 void AMyPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	HandleCursorVisibilityAndLocation();
+	
+	if (UGlobalFunctionLibrary::IsGamepadUsed(this))
+	{
+		SetGamepadAimRotation();
+	}
+
 	HandleCharacterAimingRotation();
 }
 
@@ -152,6 +183,8 @@ void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayerCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("AimY", this, &AMyPlayerCharacter::AimY);
+	PlayerInputComponent->BindAxis("AimX", this, &AMyPlayerCharacter::AimX);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AMyPlayerCharacter::StartFire);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &AMyPlayerCharacter::StopFire);
 }
