@@ -8,6 +8,7 @@
 
 class UWeaponComponent;
 class AMyPlayerController;
+class UWidgetComponent;
 
 UCLASS()
 class GAME_02_API AMyPlayerCharacter : public ACharacter
@@ -43,6 +44,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
 	UArrowComponent* AimHelper = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
+	UWidgetComponent* GamepadAimWidget = nullptr;
+
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	bool bCanShoot = true;
 
@@ -56,7 +60,6 @@ private:
 
 	float AimXValue;
 	float AimYValue;
-	FRotator AimRotationWithGamepad;
 	
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
@@ -65,5 +68,5 @@ private:
 	void StartFire();
 	void StopFire();
 
-	void SetGamepadAimRotation();
+	FRotator GetAimRotationFromGamepad();
 };

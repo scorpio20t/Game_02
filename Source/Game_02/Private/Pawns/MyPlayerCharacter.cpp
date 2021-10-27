@@ -12,6 +12,7 @@
 #include "Components/BrushComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Controllers/MyPlayerController.h"
+#include "Components/WidgetComponent.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
 {
@@ -23,6 +24,9 @@ AMyPlayerCharacter::AMyPlayerCharacter()
 	AimHelper = CreateDefaultSubobject<UArrowComponent>("AimHelper");
 	AimHelper->SetupAttachment(RootComponent);
 	AimHelper->SetHiddenInGame(true);
+
+	GamepadAimWidget = CreateDefaultSubobject<UWidgetComponent>("GamepadAimWidget");
+	GamepadAimWidget->SetupAttachment(AimHelper);
 }
 
 void AMyPlayerCharacter::MoveForward(float AxisValue)
@@ -60,18 +64,16 @@ void AMyPlayerCharacter::StopFire()
 	WeaponComponent->StopFire();
 }
 
-void AMyPlayerCharacter::SetGamepadAimRotation()
+FRotator AMyPlayerCharacter::GetAimRotationFromGamepad()
 {
 	if (IsAimingWithGamepad())
 	{
-		AimRotationWithGamepad = UKismetMathLibrary::Conv_VectorToRotator(FVector(AimXValue, AimYValue, 0.f));
+		return UKismetMathLibrary::Conv_VectorToRotator(FVector(AimXValue, AimYValue, 0.f));
 	}
 	else
 	{
-		AimRotationWithGamepad = GetActorRotation();
-	}
-
-	AimHelper->SetWorldRotation(AimRotationWithGamepad);
+		return GetActorRotation();
+	}	
 }
 
 FRotator AMyPlayerCharacter::GetAimRotationFromCursor()
@@ -86,15 +88,16 @@ void AMyPlayerCharacter::HandleCursorVisibilityAndLocation()
 	if (UGlobalFunctionLibrary::IsGamepadUsed(this))
 	{
 		CursorToWorld->SetVisibility(false);
+		GamepadAimWidget->SetVisibility(true);
 	}
 	else
 	{
 		CursorToWorld->SetVisibility(true);
+		GamepadAimWidget->SetVisibility(false);
 
 		FHitResult HitResult;
 		MyPlayerController->GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, HitResult);
 		CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, UKismetMathLibrary::MakeRotationFromAxes(HitResult.ImpactNormal, FVector::ZeroVector, FVector::ZeroVector));
-		AimHelper->SetWorldRotation(GetAimRotationFromCursor());
 
 		if (ShowCursorWhenMouseOver(HitResult.GetComponent()))
 		{
@@ -112,11 +115,13 @@ void AMyPlayerCharacter::HandleCharacterAimingRotation()
 	FRotator TargetAimRotation;
 	if (UGlobalFunctionLibrary::IsGamepadUsed(this))
 	{
-		TargetAimRotation = AimRotationWithGamepad; //TODO - try using a function returning the required FRotator
+		TargetAimRotation = GetAimRotationFromGamepad();
+		AimHelper->SetWorldRotation(TargetAimRotation);
 	}
 	else
 	{
 		TargetAimRotation = GetAimRotationFromCursor();
+		AimHelper->SetWorldRotation(GetAimRotationFromCursor());
 	}
 
 	FRotator NewRotation = 
@@ -166,12 +171,6 @@ void AMyPlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	HandleCursorVisibilityAndLocation();
-	
-	if (UGlobalFunctionLibrary::IsGamepadUsed(this))
-	{
-		SetGamepadAimRotation();
-	}
-
 	HandleCharacterAimingRotation();
 }
 
