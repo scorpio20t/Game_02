@@ -5,19 +5,12 @@
 
 AObjectiveMarker::AObjectiveMarker()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
-void AObjectiveMarker::BeginPlay()
+void AObjectiveMarker::Disable()
 {
-	Super::BeginPlay();
-	
-}
-
-void AObjectiveMarker::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	SetActorHiddenInGame(true);
 }
 
