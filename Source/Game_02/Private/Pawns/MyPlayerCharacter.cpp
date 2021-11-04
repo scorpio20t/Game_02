@@ -13,6 +13,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Controllers/MyPlayerController.h"
 #include "Components/WidgetComponent.h"
+#include "UI/PlayerHUD.h"
+#include "Objectives/ObjectiveMarker.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
 {
@@ -27,6 +29,12 @@ AMyPlayerCharacter::AMyPlayerCharacter()
 
 	GamepadAimWidget = CreateDefaultSubobject<UWidgetComponent>("GamepadAimWidget");
 	GamepadAimWidget->SetupAttachment(AimHelper);
+
+	MarkerRotator = CreateDefaultSubobject<USceneComponent>("MarkerRotator");
+	MarkerRotator->SetupAttachment(RootComponent);
+
+	OutOfScreenMarkerWidget = CreateDefaultSubobject<UWidgetComponent>("OutOfScreenMarkerWidget");
+	OutOfScreenMarkerWidget->SetupAttachment(MarkerRotator);
 }
 
 void AMyPlayerCharacter::MoveForward(float AxisValue)
@@ -159,6 +167,32 @@ bool AMyPlayerCharacter::IsAimingWithGamepad()
 		|| UKismetMathLibrary::Abs(MyPlayerInputComponent->GetAxisValue("AimX")) > 0.1f;
 }
 
+void AMyPlayerCharacter::Set3DMarkerRotation()
+{
+	if (PlayerHUD && PlayerHUD->ObjectiveMarkerRef)
+	{
+		if (PlayerHUD->ObjectiveMarkerRef->WasRecentlyRendered())
+		{
+			OutOfScreenMarkerWidget->SetVisibility(false);
+		}
+		else
+		{
+			OutOfScreenMarkerWidget->SetVisibility(true);
+			
+			FRotator MarkerRotatorRot = 
+				UKismetMathLibrary::Conv_VectorToRotator(UKismetMathLibrary::GetDirectionUnitVector
+				(GetActorLocation(), 
+					FVector(PlayerHUD->ObjectiveMarkerRef->GetActorLocation().X, PlayerHUD->ObjectiveMarkerRef->GetActorLocation().Y, GetActorLocation().Z)));
+
+			MarkerRotator->SetWorldRotation(MarkerRotatorRot);
+		}
+	}
+	else
+	{
+		OutOfScreenMarkerWidget->SetVisibility(false);
+	}
+}
+
 void AMyPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -172,6 +206,7 @@ void AMyPlayerCharacter::Tick(float DeltaTime)
 
 	HandleCursorVisibilityAndLocation();
 	HandleCharacterAimingRotation();
+	Set3DMarkerRotation();
 }
 
 void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -9,6 +9,7 @@
 class UWeaponComponent;
 class AMyPlayerController;
 class UWidgetComponent;
+class UPlayerHUD;
 
 UCLASS()
 class GAME_02_API AMyPlayerCharacter : public ACharacter
@@ -19,21 +20,6 @@ public:
 	AMyPlayerCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION(BlueprintPure, Category = "PlayerCharacter")
-	FRotator GetAimRotationFromCursor();
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerCharacter")
-	void HandleCursorVisibilityAndLocation();
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerCharacter")
-	void HandleCharacterAimingRotation();
-
-	UFUNCTION(BlueprintPure, Category = "PlayerCharacter")
-	UPARAM(DisplayName = "Show") bool ShowCursorWhenMouseOver(UPrimitiveComponent* Target);
-
-	UFUNCTION(BlueprintPure, Category = "PlayerCharacter")
-	bool IsAimingWithGamepad();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
 	float AimRotationInterpSpeed = 20.f;
@@ -47,8 +33,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
 	UWidgetComponent* GamepadAimWidget = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
+	USceneComponent* MarkerRotator = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
+	UWidgetComponent* OutOfScreenMarkerWidget = nullptr;
+
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	bool bCanShoot = true;
+
+	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
+	UPlayerHUD* PlayerHUD = nullptr;
 
 protected:
 	virtual void BeginPlay() override;
@@ -68,5 +63,12 @@ private:
 	void StartFire();
 	void StopFire();
 
+	FRotator GetAimRotationFromCursor();
 	FRotator GetAimRotationFromGamepad();
+	void HandleCursorVisibilityAndLocation();
+	void HandleCharacterAimingRotation();
+	bool ShowCursorWhenMouseOver(UPrimitiveComponent* Target);
+	bool IsAimingWithGamepad();
+
+	void Set3DMarkerRotation();
 };
