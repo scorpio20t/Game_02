@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "TimerManager.h"
 #include "GlobalFunctionLibrary.generated.h"
 
 class UMyGameInstance;
@@ -19,4 +20,25 @@ public:
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static bool IsGamepadUsed(const UObject* WorldContextObject);
+
+	template<typename... VarTypes>
+	static FTimerHandle InvokeFunction(UObject* WorldContextObject, FString FunctionName, float Delay, bool bLoop, VarTypes... Vars)
+	{
+		FTimerHandle Handle;
+		FTimerDelegate Delegate;
+		FName const FunctionFName(*FunctionName);
+
+		Delegate.BindUFunction(WorldContextObject, FunctionFName, Vars...);
+
+		if (GEngine)
+		{
+			UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject);
+			if (World)
+			{
+				World->GetTimerManager().SetTimer(Handle, Delegate, Delay, bLoop);
+			}
+		}
+
+		return Handle;
+	}
 };

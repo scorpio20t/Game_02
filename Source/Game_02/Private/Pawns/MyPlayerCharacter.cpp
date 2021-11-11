@@ -15,6 +15,7 @@
 #include "Components/WidgetComponent.h"
 #include "UI/PlayerHUD.h"
 #include "Objectives/ObjectiveMarker.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
 {
@@ -70,6 +71,32 @@ void AMyPlayerCharacter::StartFire()
 void AMyPlayerCharacter::StopFire()
 {
 	WeaponComponent->StopFire();
+}
+
+void AMyPlayerCharacter::Dash()
+{
+	if (!bIsDashing)
+	{
+		bIsDashing = true;
+		CharacterMovementComponent->BrakingFrictionFactor = 0.2f;
+
+		if (LastControlInputVector.SizeSquared() > 0.1f)
+		{
+			LaunchCharacter(LastControlInputVector * DashMultiplier, false, false);
+		}
+		else
+		{
+			LaunchCharacter(GetActorForwardVector() * DashMultiplier, false, false);
+		}
+
+		UGlobalFunctionLibrary::InvokeFunction(this, "StopDash", DashLength, false);
+	}
+}
+
+void AMyPlayerCharacter::StopDash()
+{
+	bIsDashing = false;
+	CharacterMovementComponent->BrakingFrictionFactor = 2.f;
 }
 
 FRotator AMyPlayerCharacter::GetAimRotationFromGamepad()
@@ -197,6 +224,7 @@ void AMyPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	CharacterMovementComponent = FindComponentByClass<UCharacterMovementComponent>();
 	WeaponComponent = FindComponentByClass<UWeaponComponent>();
 }
 
@@ -221,5 +249,6 @@ void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAxis("AimX", this, &AMyPlayerCharacter::AimX);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AMyPlayerCharacter::StartFire);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &AMyPlayerCharacter::StopFire);
+	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &AMyPlayerCharacter::Dash);
 }
 
