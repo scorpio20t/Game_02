@@ -14,4 +14,9 @@ class GAME_02_API AMyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void StartPlay() override;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "MyGameMode")
+	void OnStartPlay();
 };
