@@ -21,6 +21,9 @@ public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static bool IsGamepadUsed(const UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static FString GetProjectVersion(const UObject* WorldContextObject);
+
 	template<typename... VarTypes>
 	static FTimerHandle InvokeFunction(UObject* WorldContextObject, FString FunctionName, float Delay, bool bLoop, VarTypes... Vars)
 	{
