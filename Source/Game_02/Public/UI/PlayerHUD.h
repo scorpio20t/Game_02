@@ -14,7 +14,7 @@ class GAME_02_API UPlayerHUD : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(BlueprintReadWrite, Category = "PlayerHUD")
+	UPROPERTY(BlueprintReadWrite, Category = "PlayerHUD", meta=(BindWidget))
 	UUserWidget* ObjectiveMarkerWidget = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerHUD")
