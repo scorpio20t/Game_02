@@ -35,7 +35,7 @@ public:
 
 		if (GEngine)
 		{
-			UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject);
+			UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 			if (World)
 			{
 				World->GetTimerManager().SetTimer(Handle, Delegate, Delay, bLoop);
