@@ -15,6 +15,9 @@
 #include "Components/WidgetComponent.h"
 #include "UI/PlayerHUD.h"
 #include "Objectives/ObjectiveMarker.h"
+#include "EnhancedInput/Public/EnhancedInputComponent.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
@@ -38,26 +41,28 @@ AMyPlayerCharacter::AMyPlayerCharacter()
 	OutOfScreenMarkerWidget->SetupAttachment(MarkerRotator);
 }
 
-void AMyPlayerCharacter::MoveForward(float AxisValue)
+void AMyPlayerCharacter::MoveForward(const FInputActionInstance& Instance)
 {
+	float AxisValue = Instance.GetValue().Get<float>();
 	FVector ForwardMovementVector = FVector(UKismetMathLibrary::Abs(AxisValue), 0.f, 0.f);
 	AddMovementInput(ForwardMovementVector, AxisValue);
 }
 
-void AMyPlayerCharacter::MoveRight(float AxisValue)
+void AMyPlayerCharacter::MoveRight(const FInputActionInstance& Instance)
 {
+	float AxisValue = Instance.GetValue().Get<float>();
 	FVector RightMovementVector = FVector(0.f, UKismetMathLibrary::Abs(AxisValue), 0.f);
 	AddMovementInput(RightMovementVector, AxisValue);
 }
 
-void AMyPlayerCharacter::AimY(float AxisValue)
+void AMyPlayerCharacter::AimY(const FInputActionInstance& Instance)
 {
-	AimXValue = AxisValue;
+	AimXValue = -Instance.GetValue().Get<float>();;
 }
 
-void AMyPlayerCharacter::AimX(float AxisValue)
+void AMyPlayerCharacter::AimX(const FInputActionInstance& Instance)
 {
-	AimYValue = AxisValue;
+	AimYValue = Instance.GetValue().Get<float>();
 }
 
 void AMyPlayerCharacter::StartFire()
@@ -190,8 +195,8 @@ bool AMyPlayerCharacter::ShowCursorWhenMouseOver(UPrimitiveComponent* Target)
 
 bool AMyPlayerCharacter::IsAimingWithGamepad()
 {
-	return UKismetMathLibrary::Abs(MyPlayerInputComponent->GetAxisValue("AimY")) > 0.1f
-		|| UKismetMathLibrary::Abs(MyPlayerInputComponent->GetAxisValue("AimX")) > 0.1f;
+	return UKismetMathLibrary::Abs(AimYValue) > 0.1f
+		|| UKismetMathLibrary::Abs(AimXValue) > 0.1f;
 }
 
 void AMyPlayerCharacter::Set3DMarkerRotation()
@@ -223,7 +228,6 @@ void AMyPlayerCharacter::Set3DMarkerRotation()
 void AMyPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	CharacterMovementComponent = FindComponentByClass<UCharacterMovementComponent>();
 	WeaponComponent = FindComponentByClass<UWeaponComponent>();
 }
@@ -241,14 +245,19 @@ void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	MyPlayerInputComponent = PlayerInputComponent;
+	MyPlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMyPlayerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMyPlayerCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("AimY", this, &AMyPlayerCharacter::AimY);
-	PlayerInputComponent->BindAxis("AimX", this, &AMyPlayerCharacter::AimX);
-	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AMyPlayerCharacter::StartFire);
-	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &AMyPlayerCharacter::StopFire);
-	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &AMyPlayerCharacter::Dash);
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MyPlayerController->GetLocalPlayer());
+	Subsystem->ClearAllMappings();
+	Subsystem->AddMappingContext(InputMapping, 0);
+
+	UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	EnhancedInput->BindAction(InputActionFire, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::StartFire);
+	EnhancedInput->BindAction(InputActionFire, ETriggerEvent::Completed, this, &AMyPlayerCharacter::StopFire);
+	EnhancedInput->BindAction(InputActionDash, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::Dash);
+	EnhancedInput->BindAction(InputActionMoveForward, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::MoveForward);
+	EnhancedInput->BindAction(InputActionMoveRight, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::MoveRight);
+	EnhancedInput->BindAction(InputActionAimX, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::AimX);
+	EnhancedInput->BindAction(InputActionAimY, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::AimY);
 }
 

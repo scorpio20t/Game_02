@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputAction.h"
 #include "MyPlayerCharacter.generated.h"
 
 class UWeaponComponent;
@@ -57,6 +58,27 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	UPlayerHUD* PlayerHUD = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	class UInputMappingContext* InputMapping;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* InputActionFire;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* InputActionDash;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* InputActionMoveForward;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* InputActionMoveRight;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* InputActionAimX;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* InputActionAimY;
+
 	UFUNCTION()
 	void StopDash();
 
@@ -66,16 +88,15 @@ protected:
 private:
 	AMyPlayerController* MyPlayerController = nullptr;
 	UWeaponComponent* WeaponComponent = nullptr;
-	UInputComponent* MyPlayerInputComponent = nullptr;
 	UCharacterMovementComponent* CharacterMovementComponent = nullptr;
 
 	float AimXValue;
 	float AimYValue;
 	
-	void MoveForward(float AxisValue);
-	void MoveRight(float AxisValue);
-	void AimY(float AxisValue);
-	void AimX(float AxisValue);
+	void MoveForward(const FInputActionInstance& Instance);
+	void MoveRight(const FInputActionInstance& Instance);
+	void AimY(const FInputActionInstance& Instance);
+	void AimX(const FInputActionInstance& Instance);
 	void StartFire();
 	void StopFire();
 	void Dash();
