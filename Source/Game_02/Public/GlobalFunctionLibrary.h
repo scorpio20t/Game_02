@@ -25,7 +25,7 @@ public:
 	static FString GetProjectVersion(const UObject* WorldContextObject);
 
 	template<typename... VarTypes>
-	static FTimerHandle InvokeFunction(UObject* WorldContextObject, FString FunctionName, float Delay, bool bLoop, VarTypes... Vars)
+	static FTimerHandle InvokeFunction(UObject* WorldContextObject, const FString& FunctionName, float Delay, bool bLoop, VarTypes... Vars)
 	{
 		FTimerHandle Handle;
 		FTimerDelegate Delegate;

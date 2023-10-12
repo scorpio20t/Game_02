@@ -8,7 +8,7 @@
 #include "Objectives/ObjectiveMarker.h"
 #include "Components/CanvasPanelSlot.h"
 
-FVector2D UPlayerHUD::GetWidgetPositionFromWorldLocation(FVector WorldPosition, float ViewportPercentage, FVector2D& Position)
+FVector2D UPlayerHUD::GetWidgetPositionFromWorldLocation(const FVector& WorldPosition, float ViewportPercentage, FVector2D& Position)
 {
 	FVector2D UnclampedPosition;
 	UGameplayStatics::ProjectWorldToScreen

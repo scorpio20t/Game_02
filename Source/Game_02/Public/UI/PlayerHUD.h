@@ -24,6 +24,6 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
-	FVector2D GetWidgetPositionFromWorldLocation(FVector WorldPosition, float ViewportPercentage, FVector2D& Position);
+	FVector2D GetWidgetPositionFromWorldLocation(const FVector& WorldPosition, float ViewportPercentage, FVector2D& Position);
 
 };
