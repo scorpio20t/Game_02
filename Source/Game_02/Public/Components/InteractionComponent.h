@@ -34,6 +34,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY()
 	UPrimitiveComponent* InteractionCollision = nullptr;
 
 		

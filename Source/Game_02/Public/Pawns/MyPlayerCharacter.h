@@ -86,8 +86,11 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY()
 	AMyPlayerController* MyPlayerController = nullptr;
+	UPROPERTY()
 	UWeaponComponent* WeaponComponent = nullptr;
+	UPROPERTY()
 	UCharacterMovementComponent* CharacterMovementComponent = nullptr;
 
 	float AimXValue;

@@ -47,14 +47,13 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY()
 	ACharacter* CharacterOwner = nullptr;
-	
+	UPROPERTY()
+	UAnimInstance* CharacterAnimInstance = nullptr;
+	TScriptDelegate <FWeakObjectPtr> DamageTaken;
 	float CurrentHealth;
 
 	void MakeDead();
-
-	UAnimInstance* CharacterAnimInstance = nullptr;
-
-	TScriptDelegate <FWeakObjectPtr> DamageTaken;
 
 };
