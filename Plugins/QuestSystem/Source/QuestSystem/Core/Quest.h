@@ -17,13 +17,16 @@ public:
 	FDataTableRowHandle QuestDataTable;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Quest")
-	EQuestState QuestState;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Quest")
 	FText QuestName;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Quest")
 	TArray<FText> QuestObjectives;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Quest")
+	TSubclassOf<UQuest> QuestSubclass;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Quest")
+	EQuestState QuestState;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Quest")
 	int32 QuestStage; //TODO - perhaps not int?
@@ -31,6 +34,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Quest")
 	class AQuestMarker* QuestMarker;
 
-	void InitQuest();
+	void InitQuest(TSubclassOf<UQuest> _QuestSubclass);
 
 };

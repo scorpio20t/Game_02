@@ -30,9 +30,9 @@ struct FQuestInfo : public FTableRowBase
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestActivated, UQuest*, Quest);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestStageChanged, UQuest*, Quest);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnQuestStateChanged, UQuest*, Quest, EQuestState, NewState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestMarkerActivated, AQuestMarker*, QuestMarker);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnQuestStageChanged, UQuest*, Quest, bool, bIsCurrentQuest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnQuestStateChanged, UQuest*, Quest, EQuestState, NewState, bool, bIsCurrentQuest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnQuestMarkerActivated, AQuestMarker*, QuestMarker, bool, bIsCurrentQuest);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnQuestMarkerDeactivated);
 
 class UQuest;
@@ -96,7 +96,7 @@ public:
     //TODO Quests data should be stored somehow, so that ActivatedQuests is populated again when we're back in the game
 
 private:
-    void SetCurrentQuest(UQuest* Quest);
+    void SetCurrentQuest(UQuest* Quest, TSubclassOf<UQuest> QuestSubclass);
     bool IsCurrentQuest_Internal(UQuest* Quest) const;
     void ActivateQuestMarker_Internal(UQuest* Quest, AQuestMarker* QuestMarker);
     void DeactivateQuestMarker_Internal(UQuest* Quest);

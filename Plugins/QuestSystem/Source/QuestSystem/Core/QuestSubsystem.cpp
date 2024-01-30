@@ -9,7 +9,7 @@ UQuest* UQuestSubsystem::GetActivatedQuest(const TSubclassOf<UQuest> Quest) cons
 {
 	for (int i=0; i<ActivatedQuests.Num(); i++)
 	{		
-		if (ActivatedQuests[i]->QuestDataTable.RowName == Quest->GetDefaultObject<UQuest>()->QuestDataTable.RowName)
+		if (ActivatedQuests[i]->QuestSubclass == Quest)
 		{
 			return ActivatedQuests[i];
 		}
@@ -20,6 +20,11 @@ UQuest* UQuestSubsystem::GetActivatedQuest(const TSubclassOf<UQuest> Quest) cons
 
 bool UQuestSubsystem::CanActivateQuest(const UQuest* Quest) const
 {
+	if (!Quest)
+	{
+		return false;
+	}
+
 	switch (Quest->QuestState)
 	{
 		case EQuestState::INACTIVE:
@@ -38,22 +43,32 @@ bool UQuestSubsystem::CanActivateQuest(const UQuest* Quest) const
 		{
 			return false;
 		}
+		default:
+		{
+			return false;
+		}
 	}
-
-	return false;
 }
 
 bool UQuestSubsystem::IsCurrentQuest(const TSubclassOf<UQuest> Quest) const
 {
-	return IsCurrentQuest_Internal(GetActivatedQuest(Quest));
+	if (UQuest* QueriedQuest = (GetActivatedQuest(Quest)))
+	{
+		return IsCurrentQuest_Internal(GetActivatedQuest(Quest));
+	}
+	return false;
 }
 
 bool UQuestSubsystem::IsCurrentQuest_Internal(UQuest* Quest) const
 {
-	return Quest == CurrentQuest;
+	if (Quest)
+	{
+		return Quest == CurrentQuest;
+	}
+	return false;
 }
 
-void UQuestSubsystem::SetCurrentQuest(UQuest* Quest)
+void UQuestSubsystem::SetCurrentQuest(UQuest* Quest, TSubclassOf<UQuest> QuestSubclass)
 {
 	UQuest* PreviousQuest = nullptr;
 	
@@ -62,7 +77,7 @@ void UQuestSubsystem::SetCurrentQuest(UQuest* Quest)
 		PreviousQuest = CurrentQuest;
 	}
 	CurrentQuest = Quest;
-	CurrentQuest->InitQuest();
+	CurrentQuest->InitQuest(QuestSubclass);
 	OnQuestActivated.Broadcast(CurrentQuest);
 	
 	if (CurrentQuest->QuestMarker)
@@ -84,10 +99,7 @@ void UQuestSubsystem::ActivateQuestMarker_Internal(UQuest* Quest, AQuestMarker* 
 
 	Quest->QuestMarker = QuestMarker;
 	Quest->QuestMarker->Enable();
-	if (IsCurrentQuest_Internal(Quest)) //TODO - perhaps it's better to pass this bool via delegate
-	{
-		OnQuestMarkerActivated.Broadcast(Quest->QuestMarker);
-	}
+	OnQuestMarkerActivated.Broadcast(Quest->QuestMarker, IsCurrentQuest_Internal(Quest));
 }
 
 void UQuestSubsystem::DeactivateQuestMarker_Internal(UQuest* Quest)
@@ -95,7 +107,6 @@ void UQuestSubsystem::DeactivateQuestMarker_Internal(UQuest* Quest)
 	if (Quest->QuestMarker)
 	{
 		Quest->QuestMarker->Disable();
-		//Quest->QuestMarker = nullptr;
 		OnQuestMarkerDeactivated.Broadcast();
 	}
 }
@@ -106,13 +117,13 @@ void UQuestSubsystem::ActivateQuest(const TSubclassOf<UQuest> Quest)
 	{
 		if (CanActivateQuest(QuestToActivate))
 		{
-			SetCurrentQuest(QuestToActivate);
+			SetCurrentQuest(QuestToActivate, Quest);
 		}
 	}
 	else
 	{
 		UQuest* NewQuest = NewObject<UQuest>(this, NAME_None, RF_NoFlags, Quest->GetDefaultObject());
-		SetCurrentQuest(NewQuest);
+		SetCurrentQuest(NewQuest, Quest);
 		ActivatedQuests.Add(CurrentQuest);
 	}
 }
@@ -124,10 +135,7 @@ void UQuestSubsystem::ChangeQuestStage(const TSubclassOf<UQuest> Quest, int32 Ne
 		if (QuestToUpdate->QuestState == EQuestState::ACTIVE)
 		{
 			QuestToUpdate->QuestStage = NewStage;
-			if (IsCurrentQuest(Quest)) //TODO - perhaps it's better to pass this bool via delegate
-			{
-				OnQuestStageChanged.Broadcast(QuestToUpdate);
-			}
+			OnQuestStageChanged.Broadcast(QuestToUpdate, IsCurrentQuest_Internal(QuestToUpdate));
 		}
 	}
 }
@@ -139,10 +147,7 @@ void UQuestSubsystem::FinishQuest(const TSubclassOf<UQuest> Quest, EQuestState N
 		if (QuestToFinish->QuestState == EQuestState::ACTIVE)
 		{
 			QuestToFinish->QuestState = NewState;
-			if (IsCurrentQuest(Quest)) //TODO - perhaps it's better to pass this bool via delegate
-			{
-				OnQuestStateChanged.Broadcast(QuestToFinish, NewState);
-			}
+			OnQuestStateChanged.Broadcast(QuestToFinish, NewState, IsCurrentQuest_Internal(QuestToFinish));
 		}
 	}
 }
