@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUD.generated.h"
 
-class AObjectiveMarker;
+class AQuestMarker;
 
 UCLASS()
 class GAME_02_API UPlayerHUD : public UUserWidget
@@ -18,7 +18,7 @@ public:
 	UUserWidget* ObjectiveMarkerWidget = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerHUD")
-	AObjectiveMarker* ObjectiveMarkerRef = nullptr;
+	AQuestMarker* ObjectiveMarkerRef = nullptr;
 
 protected:	
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;

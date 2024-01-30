@@ -5,7 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Objectives/ObjectiveMarker.h"
+#include "QuestSystem/Core/QuestMarker.h"
 #include "Components/CanvasPanelSlot.h"
 
 FVector2D UPlayerHUD::GetWidgetPositionFromWorldLocation(const FVector& WorldPosition, float ViewportPercentage, FVector2D& Position)

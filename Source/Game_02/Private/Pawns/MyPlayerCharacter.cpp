@@ -14,7 +14,7 @@
 #include "Controllers/MyPlayerController.h"
 #include "Components/WidgetComponent.h"
 #include "UI/PlayerHUD.h"
-#include "Objectives/ObjectiveMarker.h"
+#include "QuestSystem/Core/QuestMarker.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
