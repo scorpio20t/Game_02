@@ -52,7 +52,7 @@ bool UQuestSubsystem::CanActivateQuest(const UQuest* Quest) const
 
 bool UQuestSubsystem::IsCurrentQuest(const TSubclassOf<UQuest> Quest) const
 {
-	if (UQuest* QueriedQuest = (GetActivatedQuest(Quest)))
+	if (UQuest* QueriedQuest = GetActivatedQuest(Quest))
 	{
 		return IsCurrentQuest_Internal(GetActivatedQuest(Quest));
 	}
