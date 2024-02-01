@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Engine/DataTable.h"
 #include "QuestSubsystem.generated.h"
 
 UENUM(BlueprintType)
