@@ -25,15 +25,15 @@ public:
 	void StopFire();
 
 	UPROPERTY(BlueprintReadOnly, Category="Weapon")
-	AActor* WeaponOwner = nullptr;
+	TObjectPtr<class AActor> WeaponOwner = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName AttachSocketName;
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	AController* DamageInstigator = nullptr;
+	TObjectPtr<class AController> DamageInstigator = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	APawn* WeaponPawnOwner = nullptr;
+	TObjectPtr<class APawn> WeaponPawnOwner = nullptr;
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
-	USkeletalMeshComponent* AnimatedMesh = nullptr;
+	TObjectPtr<class USkeletalMeshComponent> AnimatedMesh = nullptr;
 
 protected:
 	virtual void BeginPlay() override;

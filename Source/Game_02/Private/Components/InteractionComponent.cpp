@@ -2,6 +2,7 @@
 
 
 #include "Components/InteractionComponent.h"
+#include "Components/PrimitiveComponent.h"
 
 
 UInteractionComponent::UInteractionComponent()

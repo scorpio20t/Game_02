@@ -29,7 +29,7 @@ public:
 	bool bIsAlive = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animations")
-	UAnimMontage* DeathAnimation = nullptr;
+	TObjectPtr<class UAnimMontage> DeathAnimation = nullptr;
 
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetCurrentHealth() const;
@@ -48,9 +48,9 @@ protected:
 
 private:
 	UPROPERTY()
-	ACharacter* CharacterOwner = nullptr;
+	TObjectPtr<class ACharacter> CharacterOwner = nullptr;
 	UPROPERTY()
-	UAnimInstance* CharacterAnimInstance = nullptr;
+	TObjectPtr<class UAnimInstance> CharacterAnimInstance = nullptr;
 	TScriptDelegate <FWeakObjectPtr> DamageTaken;
 	float CurrentHealth;
 

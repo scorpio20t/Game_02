@@ -3,6 +3,7 @@
 
 #include "Components/WeaponComponent.h"
 #include "Weapons/WeaponBase.h"
+#include "Engine/World.h"
 
 UWeaponComponent::UWeaponComponent()
 {

@@ -3,6 +3,7 @@
 
 #include "Components/HealthComponent.h"
 #include "GameFramework/Character.h"
+#include "Animation/AnimMontage.h"
 
 UHealthComponent::UHealthComponent()
 {

@@ -19,6 +19,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "InputAction.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
 {

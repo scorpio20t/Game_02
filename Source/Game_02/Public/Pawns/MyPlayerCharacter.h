@@ -7,11 +7,6 @@
 #include "InputAction.h"
 #include "MyPlayerCharacter.generated.h"
 
-class UWeaponComponent;
-class AMyPlayerController;
-class UWidgetComponent;
-class UPlayerHUD;
-
 UCLASS()
 class GAME_02_API AMyPlayerCharacter : public ACharacter
 {
@@ -35,19 +30,19 @@ public:
 	float DashLength = 0.6f;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
-	UDecalComponent* CursorToWorld = nullptr;
+	TObjectPtr<class UDecalComponent> CursorToWorld = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
-	UArrowComponent* AimHelper = nullptr;
+	TObjectPtr<class UArrowComponent> AimHelper = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
-	UWidgetComponent* GamepadAimWidget = nullptr;
+	TObjectPtr<class UWidgetComponent> GamepadAimWidget = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
-	USceneComponent* MarkerRotator = nullptr;
+	TObjectPtr<class USceneComponent> MarkerRotator = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
-	UWidgetComponent* OutOfScreenMarkerWidget = nullptr;
+	TObjectPtr<class UWidgetComponent> OutOfScreenMarkerWidget = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	bool bCanShoot = true;
@@ -56,28 +51,28 @@ public:
 	bool bIsDashing = false;
 
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
-	UPlayerHUD* PlayerHUD = nullptr;
+	TObjectPtr<class UPlayerHUD> PlayerHUD = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	class UInputMappingContext* InputMapping;
+	TObjectPtr<class UInputMappingContext> InputMapping;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* InputActionFire;
+	TObjectPtr<class UInputAction> InputActionFire;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* InputActionDash;
+	TObjectPtr<class UInputAction> InputActionDash;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* InputActionMoveForward;
+	TObjectPtr<class UInputAction> InputActionMoveForward;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* InputActionMoveRight;
+	TObjectPtr<class UInputAction> InputActionMoveRight;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* InputActionAimX;
+	TObjectPtr<class UInputAction> InputActionAimX;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* InputActionAimY;
+	TObjectPtr<class UInputAction> InputActionAimY;
 
 	UFUNCTION()
 	void StopDash();
@@ -87,11 +82,11 @@ protected:
 
 private:
 	UPROPERTY()
-	AMyPlayerController* MyPlayerController = nullptr;
+	TObjectPtr<class AMyPlayerController> MyPlayerController = nullptr;
 	UPROPERTY()
-	UWeaponComponent* WeaponComponent = nullptr;
+	TObjectPtr<class UWeaponComponent> WeaponComponent = nullptr;
 	UPROPERTY()
-	UCharacterMovementComponent* CharacterMovementComponent = nullptr;
+	TObjectPtr<class UCharacterMovementComponent> CharacterMovementComponent = nullptr;
 
 	float AimXValue;
 	float AimYValue;

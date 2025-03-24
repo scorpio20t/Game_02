@@ -5,6 +5,7 @@
 #include "MyGameInstance.h"
 #include "MyGameMode.h"
 #include "Engine/World.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Kismet/GameplayStatics.h"
 
 UMyGameInstance* UGlobalFunctionLibrary::GetMyGameInstance(const UObject* WorldContextObject)

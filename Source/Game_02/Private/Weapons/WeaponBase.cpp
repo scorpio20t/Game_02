@@ -2,6 +2,8 @@
 
 
 #include "Weapons/WeaponBase.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Controller.h"
 
 AWeaponBase::AWeaponBase()
 {

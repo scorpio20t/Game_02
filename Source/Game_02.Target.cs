@@ -8,8 +8,8 @@ public class Game_02Target : TargetRules
 	public Game_02Target(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+		DefaultBuildSettings = BuildSettingsVersion.V4;
 
-		ExtraModuleNames.AddRange( new string[] { "Game_02" } );
+        ExtraModuleNames.AddRange( new string[] { "Game_02" } );
 	}
 }
