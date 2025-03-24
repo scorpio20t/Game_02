@@ -99,12 +99,12 @@ private:
 	void StopFire();
 	void Dash();
 
-	FRotator GetAimRotationFromCursor();
-	FRotator GetAimRotationFromGamepad();
+	FRotator GetAimRotationFromCursor() const;
+	FRotator GetAimRotationFromGamepad() const;
 	void HandleCursorVisibilityAndLocation();
 	void HandleCharacterAimingRotation();
 	bool ShowCursorWhenMouseOver(UPrimitiveComponent* Target);
-	bool IsAimingWithGamepad();
+	bool IsAimingWithGamepad() const;
 
 	void Set3DMarkerRotation();
 };

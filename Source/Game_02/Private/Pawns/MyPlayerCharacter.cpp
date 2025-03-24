@@ -105,7 +105,7 @@ void AMyPlayerCharacter::StopDash()
 	CharacterMovementComponent->BrakingFrictionFactor = 2.f;
 }
 
-FRotator AMyPlayerCharacter::GetAimRotationFromGamepad()
+FRotator AMyPlayerCharacter::GetAimRotationFromGamepad() const
 {
 	if (IsAimingWithGamepad())
 	{
@@ -117,7 +117,7 @@ FRotator AMyPlayerCharacter::GetAimRotationFromGamepad()
 	}	
 }
 
-FRotator AMyPlayerCharacter::GetAimRotationFromCursor()
+FRotator AMyPlayerCharacter::GetAimRotationFromCursor() const
 {
 	FVector ToVector = FVector(CursorToWorld->GetComponentLocation().X, CursorToWorld->GetComponentLocation().Y, GetActorLocation().Z);
 	
@@ -194,7 +194,7 @@ bool AMyPlayerCharacter::ShowCursorWhenMouseOver(UPrimitiveComponent* Target)
 	}
 }
 
-bool AMyPlayerCharacter::IsAimingWithGamepad()
+bool AMyPlayerCharacter::IsAimingWithGamepad() const
 {
 	return UKismetMathLibrary::Abs(AimYValue) > 0.1f
 		|| UKismetMathLibrary::Abs(AimXValue) > 0.1f;
