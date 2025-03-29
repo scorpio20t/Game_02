@@ -15,10 +15,10 @@ class GAME_02_API UPlayerHUD : public UUserWidget
 	
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerHUD", meta=(BindWidget))
-	UUserWidget* ObjectiveMarkerWidget = nullptr;
+	TObjectPtr<UUserWidget> ObjectiveMarkerWidget = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerHUD")
-	AQuestMarker* ObjectiveMarkerRef = nullptr;
+	TObjectPtr<AQuestMarker> ObjectiveMarkerRef = nullptr;
 
 protected:	
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;

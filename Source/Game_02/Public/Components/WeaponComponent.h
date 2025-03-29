@@ -26,10 +26,5 @@ public:
 	UPROPERTY(EditAnywhere, Category="WeaponComponent")
 	TSubclassOf<AWeaponBase> WeaponClass = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "WeaponComponent")
-	AWeaponBase* WeaponRef = nullptr;
-
-
-
-
-		
+	AWeaponBase* WeaponRef = nullptr;		
 };

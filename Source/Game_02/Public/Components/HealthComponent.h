@@ -20,7 +20,7 @@ public:
 	FOnDeath OnDeath;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Health")
-	float MaxHealth = 100;
+	float MaxHealth = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	bool bCanBeDamaged = true;
@@ -55,5 +55,4 @@ private:
 	float CurrentHealth;
 
 	void MakeDead();
-
 };

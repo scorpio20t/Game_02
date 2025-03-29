@@ -35,7 +35,5 @@ protected:
 
 private:
 	UPROPERTY()
-	UPrimitiveComponent* InteractionCollision = nullptr;
-
-		
+	TObjectPtr<UPrimitiveComponent> InteractionCollision = nullptr;		
 };

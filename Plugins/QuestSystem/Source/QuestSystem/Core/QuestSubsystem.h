@@ -61,7 +61,7 @@ public:
     FOnQuestMarkerDeactivated OnQuestMarkerDeactivated;
     
     UPROPERTY(BlueprintReadOnly, Category = "Quest")
-    UQuest* CurrentQuest;
+    TObjectPtr<UQuest> CurrentQuest;
 
     UPROPERTY(BlueprintReadOnly, Category = "Quest")
     TArray<UQuest*> ActivatedQuests;

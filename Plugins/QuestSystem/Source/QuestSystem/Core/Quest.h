@@ -32,7 +32,7 @@ public:
 	int32 QuestStage; //TODO - perhaps not int?
 
 	UPROPERTY(BlueprintReadOnly, Category = "Quest")
-	class AQuestMarker* QuestMarker;
+	TObjectPtr<class AQuestMarker> QuestMarker;
 
 	void InitQuest(TSubclassOf<UQuest> _QuestSubclass);
 
