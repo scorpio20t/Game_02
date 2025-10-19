@@ -8,7 +8,7 @@ public class Game_02 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "QuestSystem"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "QuestSystem", "GameplayAbilities", "GameplayTags" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 

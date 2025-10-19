@@ -2,13 +2,15 @@
 
 
 #include "Pawns/MyPlayerCharacter.h"
+
+#include "AbilitySystemComponent.h"
+#include "GameplayAbilitySpec.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/WeaponComponent.h"
 #include "Components/DecalComponent.h"
 #include "Components/ArrowComponent.h"
 #include "GlobalFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Components/BrushComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Controllers/MyPlayerController.h"
@@ -16,7 +18,6 @@
 #include "UI/PlayerHUD.h"
 #include "QuestSystem/Core/QuestMarker.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
-#include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputAction.h"
@@ -24,6 +25,8 @@
 AMyPlayerCharacter::AMyPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("PlayerAbilitySystemComponent");
 
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->SetupAttachment(RootComponent);
@@ -81,28 +84,7 @@ void AMyPlayerCharacter::StopFire()
 
 void AMyPlayerCharacter::Dash()
 {
-	if (!bIsDashing)
-	{
-		bIsDashing = true;
-		CharacterMovementComponent->BrakingFrictionFactor = 0.2f;
-
-		if (LastControlInputVector.SizeSquared() > 0.1f)
-		{
-			LaunchCharacter(LastControlInputVector * DashMultiplier, false, false);
-		}
-		else
-		{
-			LaunchCharacter(GetActorForwardVector() * DashMultiplier, false, false);
-		}
-
-		UGlobalFunctionLibrary::InvokeFunction(this, "StopDash", DashLength, false);
-	}
-}
-
-void AMyPlayerCharacter::StopDash()
-{
-	bIsDashing = false;
-	CharacterMovementComponent->BrakingFrictionFactor = 2.f;
+	AbilitySystemComponent->TryActivateAbilityByClass(DashAbility);
 }
 
 FRotator AMyPlayerCharacter::GetAimRotationFromGamepad() const
@@ -226,11 +208,18 @@ void AMyPlayerCharacter::Set3DMarkerRotation()
 	}
 }
 
+void AMyPlayerCharacter::GiveInitialAbilities() const
+{
+	AbilitySystemComponent->GiveAbility(DashAbility);
+}
+
 void AMyPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	CharacterMovementComponent = FindComponentByClass<UCharacterMovementComponent>();
 	WeaponComponent = FindComponentByClass<UWeaponComponent>();
+
+	GiveInitialAbilities();
 }
 
 void AMyPlayerCharacter::Tick(float DeltaTime)

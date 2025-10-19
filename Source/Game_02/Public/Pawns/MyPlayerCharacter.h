@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "MyPlayerCharacter.generated.h"
@@ -17,17 +18,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MyPlayerCharacter")
+	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;
+
+	//Player Abilities
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
+	TSubclassOf<class UGameplayAbility> DashAbility;
+	//---------------
+
 	/*Player rotation-to-cursor ratio*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
 	float AimRotationInterpSpeed = 20.f;
-
-	/*Determines Dash speed and distance*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
-	float DashMultiplier = 3000.f;
-
-	/*Has to be equal to Dash Anim Sequence length, considering the Anim Sequence rate (if not 1.0)*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
-	float DashLength = 0.6f;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
 	TObjectPtr<class UDecalComponent> CursorToWorld = nullptr;
@@ -46,9 +47,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	bool bCanShoot = true;
-
-	UPROPERTY(BlueprintReadOnly, Category = "PlayerCharacter")
-	bool bIsDashing = false;
 
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	TObjectPtr<class UPlayerHUD> PlayerHUD = nullptr;
@@ -74,9 +72,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> InputActionAimY;
 
-	UFUNCTION()
-	void StopDash();
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -91,6 +86,7 @@ private:
 	float AimXValue;
 	float AimYValue;
 	
+	void GiveInitialAbilities() const;
 	void MoveForward(const FInputActionInstance& Instance);
 	void MoveRight(const FInputActionInstance& Instance);
 	void AimY(const FInputActionInstance& Instance);

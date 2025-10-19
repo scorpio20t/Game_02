@@ -51,7 +51,7 @@ private:
 	TObjectPtr<class ACharacter> CharacterOwner = nullptr;
 	UPROPERTY()
 	TObjectPtr<class UAnimInstance> CharacterAnimInstance = nullptr;
-	TScriptDelegate <FWeakObjectPtr> DamageTaken;
+	FScriptDelegate DamageTaken;
 	float CurrentHealth;
 
 	void MakeDead();
