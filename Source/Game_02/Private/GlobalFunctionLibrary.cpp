@@ -7,10 +7,16 @@
 #include "Engine/World.h"
 #include "Misc/ConfigCacheIni.h"
 #include "Kismet/GameplayStatics.h"
+#include "Pawns/MyPlayerCharacter.h"
 
 UMyGameInstance* UGlobalFunctionLibrary::GetMyGameInstance(const UObject* WorldContextObject)
 {
 	return Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
+}
+
+AMyPlayerCharacter* UGlobalFunctionLibrary::GetMyPlayerCharacter(const UObject* WorldContextObject)
+{
+	return Cast<AMyPlayerCharacter>(UGameplayStatics::GetPlayerPawn(WorldContextObject, 0));
 }
 
 bool UGlobalFunctionLibrary::IsGamepadUsed(const UObject* WorldContextObject)

@@ -18,13 +18,28 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MyPlayerCharacter")
 	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MyPlayerCharacter")
+	TObjectPtr<class UHealthComponent> HealthComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MyPlayerCharacter")
+	TObjectPtr<class UWeaponComponent> WeaponComponent;
+	//---------------
 
 	//Player Abilities
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
+	int32 FireAbilityInputID = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
+	TSubclassOf<class UGameplayAbility> FireAbility;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
 	TSubclassOf<class UGameplayAbility> DashAbility;
 	//---------------
+	
+	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
+	bool bCanShoot = true;
 
 	/*Player rotation-to-cursor ratio*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
@@ -44,9 +59,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerCharacter")
 	TObjectPtr<class UWidgetComponent> OutOfScreenMarkerWidget = nullptr;
-
-	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
-	bool bCanShoot = true;
 
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerCharacter")
 	TObjectPtr<class UPlayerHUD> PlayerHUD = nullptr;
@@ -78,10 +90,6 @@ protected:
 private:
 	UPROPERTY()
 	TObjectPtr<class AMyPlayerController> MyPlayerController = nullptr;
-	UPROPERTY()
-	TObjectPtr<class UWeaponComponent> WeaponComponent = nullptr;
-	UPROPERTY()
-	TObjectPtr<class UCharacterMovementComponent> CharacterMovementComponent = nullptr;
 
 	float AimXValue;
 	float AimYValue;

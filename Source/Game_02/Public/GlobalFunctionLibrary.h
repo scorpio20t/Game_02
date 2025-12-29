@@ -7,6 +7,7 @@
 #include "TimerManager.h"
 #include "GlobalFunctionLibrary.generated.h"
 
+class AMyPlayerCharacter;
 class UMyGameInstance;
 
 UCLASS()
@@ -17,6 +18,9 @@ class GAME_02_API UGlobalFunctionLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static UMyGameInstance* GetMyGameInstance(const UObject* WorldContextObject);
+	
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static AMyPlayerCharacter* GetMyPlayerCharacter(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static bool IsGamepadUsed(const UObject* WorldContextObject);

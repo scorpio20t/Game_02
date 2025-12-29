@@ -19,14 +19,16 @@
 #include "QuestSystem/Core/QuestMarker.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "InputAction.h"
+#include "Components/HealthComponent.h"
 
 AMyPlayerCharacter::AMyPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("PlayerAbilitySystemComponent");
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->SetupAttachment(RootComponent);
@@ -73,13 +75,13 @@ void AMyPlayerCharacter::StartFire()
 {
 	if (bCanShoot)
 	{
-		WeaponComponent->StartFire();
+		AbilitySystemComponent->TryActivateAbilityByClass(FireAbility);
 	}
 }
 
 void AMyPlayerCharacter::StopFire()
 {
-	WeaponComponent->StopFire();
+	AbilitySystemComponent->ReleaseInputID(FireAbilityInputID);
 }
 
 void AMyPlayerCharacter::Dash()
@@ -211,14 +213,12 @@ void AMyPlayerCharacter::Set3DMarkerRotation()
 void AMyPlayerCharacter::GiveInitialAbilities() const
 {
 	AbilitySystemComponent->GiveAbility(DashAbility);
+	AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(FireAbility, 0, FireAbilityInputID)); //alternative - use K2_GiveAbility
 }
 
 void AMyPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	CharacterMovementComponent = FindComponentByClass<UCharacterMovementComponent>();
-	WeaponComponent = FindComponentByClass<UWeaponComponent>();
-
 	GiveInitialAbilities();
 }
 
